@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title id="title">我的主页</title>
+    <script src="/static/js/cre_xhr.js"></script>
+    <script src="/static/js/jquery-1.11.3.js"></script>
+
+
+
+    <style>
+        #nav,#main{
+			width:650px;
+			margin:0 auto;
+            position: relative;
+            top:auto;
+            left: auto;
+		}
+		#main{
+			height:30px;
+			/*background-color:orange;*/
+			/*clear: both;*/
+		}
+        #nav{
+            background-color: #ffae54;
+
+        }
+        #nav a{
+            color: #14a924;
+			float:left;
+			width:100px;
+			height: 50px;
+			background-color: #ffae54;
+			text-align: center;
+			line-height: 50px;
+			margin-right:10px;
+            text-decoration: none;
+		}
+		#nav .no-margin{
+			margin:0;
+		}
+        #nav .clear{
+			clear:both;
+		}
+        #text_in{
+            font-size:20px;
+            width:500px;
+            height:100px;
+            margin: 0 430px;
+            position: relative;
+            top: auto;
+            left: -38px;
+        }
+        #btn_sub{
+            margin-left: -80px;
+        }
+        #ctrl{
+            position: relative;
+            left: 600px;
+        }
+        #comm_ar{
+            width: 500px;
+            position: relative;
+            top:0;
+            left: 473px;
+        }
+        p{
+            width:415px;
+            margin-left: 20px;
+        }
+        h4{
+            width: 500px;
+        }
+        .hello_update{
+            width: 500px;
+            position: relative;
+            left: 391px;
+        }
+    </style>
+</head>
+<body onload="load()">
+    <div id="nav">
+        <a href="/">首页</a>
+        <a href="">我的主页</a>
+        <a href="javascript:void(0);" onclick="my_history();">我的记录</a>
+        <a href="">我的资料</a>
+        <a href="">设置</a>
+        <a href="/logout" class="no-margin">退出</a>
+        <div class="clear"></div>
+    </div>
+    <div id="main"></div>
+    <h3 class="hello_update">你好,{{nickname}}</h3>
+    <div>
+    <form action="/My_page" method="post">
+        <textarea id="text_in" name="uinfo"></textarea>
+        <div>
+            <img src="">
+        </div>
+        <p id="ctrl">
+            图片:
+            <input type="file" name="image" accept="image/gif, image/jpeg" onchange="show_image();">
+            <input id="btn_sub" type="submit" value="发表">
+        </p>
+    </form>
+        <a href="" class="hello_update" style="text-decoration:none;">
+            <button>更新</button>
+        </a>
+
+    </div>
+    <div id="comm_ar"></div>
+    <script>
+        function load() {
+         var xhr = createXhr();
+         xhr.open('get','/get_comm',true);
+         xhr.onreadystatechange = function () {
+             if(xhr.readyState==4&&xhr.status==200){
+                 var res = xhr.responseText;
+                 //将res转换为JS对象再保存给res
+                 res = JSON.parse(res);
+                 //循环遍历res得到每一个对象以及数据
+                 var str = "";
+                 $.each(res,function(i,obj){
+                     str += '<h4>';
+                      str += "用户:"+obj.nickname+"&nbsp";
+                      str += "于:"+obj.up_time;
+                     str += '</h4>';
+                     str += '<p>';
+                      str += obj.text;
+                     str += '</p>';
+                 });
+                 $("#comm_ar").html(str);
+             }
+         };
+         xhr.send(null);
+    }
+
+        function my_history() {
+            $.ajax({
+                url:'/history',
+                type:'get',
+                dataType:'json',
+                success: function (data) {
+                    var html = "";
+                    $.each(data.reverse(),function (i,obj) {
+                        html += '<h4>';
+                            html += obj.nickname + "发表于:" + obj.up_time;
+                        html += '</h4>';
+                        html += '<p>';
+                            html += obj.text;
+                        html += '</p>';
+                    });
+                    $("#comm_ar").html(html);
+                }
+            });
+            $("#title").text('我的记录');
+        }
+    </script>
+</body>
+</html>
+

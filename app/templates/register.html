@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>注册页面</title>
+</head>
+<body>
+<form action="/register" method="post">
+    <p>
+        用户名: <input id="uname" style='margin-left: 3px' type="text" name="uname" placeholder="请输入用户名" onblur="checkRepet()" value=""><span id="show" style=""></span>
+    </p>
+    <p>
+        密码: <input style='margin-left: 18px' type="password" name="upwd" placeholder="请输入6-12位密码">
+    </p>
+    <p>
+        昵称: <input style='margin-left: 18px' type="text" name="nickname">
+    </p>
+    <p>
+        <input id="poto" type="button" value="提交">
+    </p>
+    <script>
+        function createXhr() {
+            if(XMLHttpRequest){
+                var xhr = new XMLHttpRequest();
+            }else{
+                var xhr = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            return xhr;
+        }
+
+        function checkRepet() {
+            xhr = createXhr();
+            var uname = document.getElementById('uname').value;
+            url = '/check?uname='+uname;
+            xhr.open('get',url,true);
+            xhr.onreadystatechange = function () {
+                var resp = xhr.responseText;
+                if (resp=='1'){
+                    document.getElementById('show').setAttribute('style',"color:red;");
+                    anwser = "* 用户名已存在"
+                    document.getElementById('poto').setAttribute('type','button');
+                }else{
+                    document.getElementById('show').setAttribute('style',"color:green;");
+                    anwser = "* 该用户名可以使用"
+                    document.getElementById('poto').setAttribute('type','submit');
+                }
+                document.getElementById('show').innerHTML = anwser;
+            };
+            xhr.send(null)
+        }
+    </script>
+</form>
+</body>
+</html>
