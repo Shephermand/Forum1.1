@@ -178,9 +178,9 @@
                             html += obj.text;
                         html += '</p>';
                         if(obj.image){
-                        html += "<img id='comm_img' src='static/" + obj.image + "'>";
+                            html += "<img id='comm_img' src='static/" + obj.image + "'>";
+                        }
                         html += '</div>';
-                     }
                     });
                     $("#comm_ar").html(html);
                 }
@@ -197,7 +197,7 @@
 //                    e.target.resule获取到被选文件的路径
                     $("#show").html("<img id='show1' src='"+e.target.result+"' >");
 //                    显示图片后提示文字位置调整
-                    $("#word").attr('style',"position: relative; left: -520px;")
+                    $("#word").attr('style',"position: relative; right: 135%;")
                 }
 
             }
