@@ -22,6 +22,7 @@ class Comment(db.Model):
     __tablename__ = 'comment'
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.Text)
+    image = db.Column(db.Text)
     up_time = db.Column(db.TIMESTAMP, nullable=False)
     uid = db.Column(db.Integer, db.ForeignKey('user.id'))
 
@@ -29,10 +30,13 @@ class Comment(db.Model):
         self.text = text
         self.uid = uid
 
+
     def to_dict(self):
         dic = {
             'uname': self.user.uname,
             'text': self.text,
             'up_time': str(self.up_time),
+            'nickname': self.user.nickname,
+            'image': self.image,
         }
         return dic

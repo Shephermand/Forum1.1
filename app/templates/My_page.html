@@ -62,7 +62,13 @@
             width: 500px;
             position: relative;
             top:0;
-            left: 473px;
+            left: 30%;
+        }
+        .comm{
+            width:500px;
+            border: 2px dashed #ff0e93;
+            background-color: aqua;
+            margin-top: 10px;
         }
         p{
             width:415px;
@@ -76,12 +82,28 @@
             position: relative;
             left: 391px;
         }
+        #show{
+            position:relative;
+            left:50%;
+            float:left;
+        }
+        #show1{
+            position:relative;
+            left:-50%;
+            width:350px;
+            height:200px;
+        }
+        #comm_img{
+            width:350px;
+            height:200px;
+        }
+
     </style>
 </head>
 <body onload="load()">
     <div id="nav">
         <a href="/">首页</a>
-        <a href="">我的主页</a>
+        <a href="javascript:void(0);" onclick="load()">我的主页</a>
         <a href="javascript:void(0);" onclick="my_history();">我的记录</a>
         <a href="">我的资料</a>
         <a href="">设置</a>
@@ -91,13 +113,13 @@
     <div id="main"></div>
     <h3 class="hello_update">你好,{{nickname}}</h3>
     <div>
-    <form action="/My_page" method="post">
+    <form action="/My_page" method="post" enctype="multipart/form-data">
         <textarea id="text_in" name="uinfo"></textarea>
         <div id="show">
 
         </div>
         <p id="ctrl">
-            图片:
+            <i id="word">选择图片</i>
             <input type="file" name="image" accept="image/gif, image/jpeg" onchange="show_image(this.files);">
             <input id="btn_sub" type="submit" value="发表">
         </p>
@@ -108,6 +130,7 @@
 
     </div>
     <div id="comm_ar"></div>
+
     <script>
         function load() {
          var xhr = createXhr();
@@ -120,6 +143,7 @@
                  //循环遍历res得到每一个对象以及数据
                  var str = "";
                  $.each(res,function(i,obj){
+                     str += '<div class="comm">';
                      str += '<h4>';
                       str += "用户:"+obj.nickname+"&nbsp";
                       str += "于:"+obj.up_time;
@@ -127,6 +151,10 @@
                      str += '<p>';
                       str += obj.text;
                      str += '</p>';
+                     if(obj.image){
+                        str += "<img id='comm_img' src='static/" + obj.image + "'>";
+                     }
+                     str += '</div>';
                  });
                  $("#comm_ar").html(str);
              }
@@ -142,12 +170,17 @@
                 success: function (data) {
                     var html = "";
                     $.each(data.reverse(),function (i,obj) {
+                        html += '<div class="comm">';
                         html += '<h4>';
                             html += obj.nickname + "发表于:" + obj.up_time;
                         html += '</h4>';
                         html += '<p>';
                             html += obj.text;
                         html += '</p>';
+                        if(obj.image){
+                        html += "<img id='comm_img' src='static/" + obj.image + "'>";
+                        html += '</div>';
+                     }
                     });
                     $("#comm_ar").html(html);
                 }
@@ -161,8 +194,12 @@
                 var reader = new FileReader();
                 reader.readAsDataURL(f[i]);
                 reader.onload = function (e) {
-                    $("#show").html("<img src='"+e.target.result+"' width='200px' height='200px'>");
+//                    e.target.resule获取到被选文件的路径
+                    $("#show").html("<img id='show1' src='"+e.target.result+"' >");
+//                    显示图片后提示文字位置调整
+                    $("#word").attr('style',"position: relative; left: -520px;")
                 }
+
             }
         }
     </script>

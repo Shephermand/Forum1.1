@@ -11,7 +11,6 @@ def comm_all():
     lst = []
     for c in comm:
         dic = c.to_dict()
-        dic['nickname'] = c.user.nickname
         lst.append(dic)
     return lst
 

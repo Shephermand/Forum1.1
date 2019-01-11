@@ -3,6 +3,8 @@ from .. import db
 from ..models import *
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import request, render_template, redirect, session
+import os
+import datetime
 
 
 @main.route('/')
@@ -75,7 +77,8 @@ def login_view():
         else:
             return render_template('login.html', errMsg='用户名或密码不正确')
 
-@main.route('/My_page', methods=["GET","POST"])
+
+@main.route('/My_page', methods=["GET", "POST"])
 def My_page_view():
     if request.method == "GET":
         if 'uname' in session:
@@ -89,6 +92,15 @@ def My_page_view():
         text = request.form['uinfo']
         user = User.query.filter_by(uname=uname).first()
         uid = user.id
-        comment = Comment(text,uid)
+        comment = Comment(text, uid)
+        if request.files:
+            f = request.files['image']
+            ftime = datetime.datetime.now().strftime("%Y%m%d%H%S%M%f")
+            ext = f.filename.split('.')[1]
+            filename = ftime + '.' + ext
+            basedir = os.path.dirname(os.path.dirname(__file__))
+            upload_path = os.path.join(basedir, 'static/upload_image', filename)
+            f.save(upload_path)
+            comment.image = "upload_image/" + filename
         db.session.add(comment)
         return render_template('My_page.html', nickname=user.nickname)
