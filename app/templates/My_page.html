@@ -93,12 +93,12 @@
     <div>
     <form action="/My_page" method="post">
         <textarea id="text_in" name="uinfo"></textarea>
-        <div>
-            <img src="">
+        <div id="show">
+
         </div>
         <p id="ctrl">
             图片:
-            <input type="file" name="image" accept="image/gif, image/jpeg" onchange="show_image();">
+            <input type="file" name="image" accept="image/gif, image/jpeg" onchange="show_image(this.files);">
             <input id="btn_sub" type="submit" value="发表">
         </p>
     </form>
@@ -153,6 +153,17 @@
                 }
             });
             $("#title").text('我的记录');
+        }
+        
+        function show_image(f) {
+//            即时显示被选图片
+            for (var i=0; i<f.length; i++){
+                var reader = new FileReader();
+                reader.readAsDataURL(f[i]);
+                reader.onload = function (e) {
+                    $("#show").html("<img src='"+e.target.result+"' width='200px' height='200px'>");
+                }
+            }
         }
     </script>
 </body>
