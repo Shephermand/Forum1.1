@@ -13,10 +13,23 @@ class User(db.Model):
         lazy='dynamic'
     )
 
+    replies = db.relationship(
+        "Reply",
+        backref='user',
+        lazy='dynamic'
+    )
+
+    answers = db.relationship(
+        "Answer",
+        backref="user",
+        lazy="dynamic"
+    )
+
     def __init__(self, uname, upwd, nickname):
         self.uname = uname
         self.upwd = upwd
         self.nickname = nickname
+
 
 class Comment(db.Model):
     __tablename__ = 'comment'
@@ -26,6 +39,12 @@ class Comment(db.Model):
     up_time = db.Column(db.TIMESTAMP, nullable=False)
     uid = db.Column(db.Integer, db.ForeignKey('user.id'))
 
+    answers = db.relationship(
+        "Answer",
+        backref='comm',
+        lazy='dynamic'
+    )
+
     def __init__(self, text, uid):
         self.text = text
         self.uid = uid
@@ -33,6 +52,7 @@ class Comment(db.Model):
 
     def to_dict(self):
         dic = {
+            'cid':self.id,
             'uname': self.user.uname,
             'text': self.text,
             'up_time': str(self.up_time),
@@ -40,3 +60,31 @@ class Comment(db.Model):
             'image': self.image,
         }
         return dic
+
+
+class Answer(db.Model):
+    __tablename__ = 'answer'
+    id = db.Column(db.Integer, primary_key=True)
+    anw = db.Column(db.String(150), nullable=False)
+    a_time = db.Column(db.TIMESTAMP, nullable=False)
+    cid = db.Column(db.Integer, db.ForeignKey('comment.id'))
+    uid = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    replies = db.relationship(
+        'Reply',
+        backref='answer',
+        lazy='dynamic'
+    )
+
+
+class Reply(db.Model):
+    __tablename__ = 'reply'
+    id = db.Column(db.Integer, primary_key=True)
+    rpl = db.Column(db.String(150), nullable=False)
+    r_time = db.Column(db.TIMESTAMP, nullable=False)
+    uid = db.Column(db.Integer, db.ForeignKey('user.id'))
+    aid = db.Column(db.Integer,db.ForeignKey('answer.id'))
+
+
+
+

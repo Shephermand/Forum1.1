@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>注册页面</title>
+    <script src="/static/js/jquery-1.11.3.js"></script>
 </head>
 <body>
 <form action="/register" method="post">
@@ -33,20 +34,27 @@
             var uname = document.getElementById('uname').value;
             url = '/check?uname='+uname;
             xhr.open('get',url,true);
+            if(!$("#uname").val()){
+                document.getElementById('show').setAttribute('style',"color:red;");
+                anwser = "* 用户名不能为空";
+                document.getElementById('poto').setAttribute('type','button');
+                document.getElementById('show').innerHTML = anwser;
+                return null
+            }
             xhr.onreadystatechange = function () {
                 var resp = xhr.responseText;
                 if (resp=='1'){
                     document.getElementById('show').setAttribute('style',"color:red;");
-                    anwser = "* 用户名已存在"
+                    anwser = "* 用户名已存在";
                     document.getElementById('poto').setAttribute('type','button');
                 }else{
                     document.getElementById('show').setAttribute('style',"color:green;");
-                    anwser = "* 该用户名可以使用"
+                    anwser = "* 该用户名可以使用";
                     document.getElementById('poto').setAttribute('type','submit');
                 }
                 document.getElementById('show').innerHTML = anwser;
             };
-            xhr.send(null)
+            xhr.send(null);
         }
     </script>
 </form>

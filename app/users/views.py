@@ -5,6 +5,7 @@ from flask import session, redirect, request
 from werkzeug.security import check_password_hash
 import json
 
+
 def comm_all():
     # comm = Comment.query.all()
     comm = db.session.query(Comment).order_by('id desc').limit(20)
@@ -13,6 +14,7 @@ def comm_all():
         dic = c.to_dict()
         lst.append(dic)
     return lst
+
 
 @users.route('/logout')
 def logout_view():
@@ -23,11 +25,13 @@ def logout_view():
         resp.delete_cookie('uname')
     return resp
 
+
 @users.route('/get_comm')
 def get_comm_view():
     lst = comm_all()
     lst = json.dumps(lst)
     return lst
+
 
 @users.route('/history')
 def get_history():
@@ -40,8 +44,20 @@ def get_history():
         comms = user.comments
         for c in comms:
             dic = c.to_dict()
-            dic['nickname'] = user.nickname
             lst.append(dic)
         return json.dumps(lst)
     else:
         return redirect('/')
+
+
+@users.route('/del_record')
+def delete_record():
+    cid = request.args['cid']
+    comm = Comment.query.filter_by(id=cid).first()
+    user = comm.user.uname
+    if 'uname' in session and user == session['uname']:
+        db.session.delete(comm)
+        return json.dumps(1)
+    return json.dumps(0)
+
+

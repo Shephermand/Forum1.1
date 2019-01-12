@@ -6,8 +6,6 @@
     <script src="/static/js/cre_xhr.js"></script>
     <script src="/static/js/jquery-1.11.3.js"></script>
 
-
-
     <style>
         #nav,#main{
 			width:650px;
@@ -49,14 +47,16 @@
             margin: 0 430px;
             position: relative;
             top: auto;
-            left: -38px;
+            left: -2%;
         }
         #btn_sub{
             margin-left: -80px;
+            position: relative;
+            left: 32%;
         }
         #ctrl{
             position: relative;
-            left: 600px;
+            left: 50%;
         }
         #comm_ar{
             width: 500px;
@@ -80,16 +80,17 @@
         .hello_update{
             width: 500px;
             position: relative;
-            left: 391px;
+            left: 30%;
         }
         #show{
             position:relative;
-            left:50%;
-            float:left;
+            left:76%;
+            top: 5px;
         }
         #show1{
             position:relative;
-            left:-50%;
+            left:-37%;
+            top: 2%;
             width:350px;
             height:200px;
         }
@@ -97,16 +98,28 @@
             width:350px;
             height:200px;
         }
+        #cancel{
+            position: relative;
+            left: 34%;
+        }
+        .comm a{
+            text-decoration: none;
+            color: red;
+            position: relative;
+            top:-47px;
+            right:-90%;
+        }
 
     </style>
+
 </head>
 <body onload="load()">
     <div id="nav">
         <a href="/">首页</a>
         <a href="javascript:void(0);" onclick="load()">我的主页</a>
         <a href="javascript:void(0);" onclick="my_history();">我的记录</a>
-        <a href="">我的资料</a>
-        <a href="">设置</a>
+        <a href="">网盘</a>
+        <a href="">个人资料</a>
         <a href="/logout" class="no-margin">退出</a>
         <div class="clear"></div>
     </div>
@@ -114,24 +127,30 @@
     <h3 class="hello_update">你好,{{nickname}}</h3>
     <div>
     <form action="/My_page" method="post" enctype="multipart/form-data">
-        <textarea id="text_in" name="uinfo"></textarea>
+        <textarea id="text_in" name="uinfo" placeholder="说点什么吧..." onblur="checknull();"></textarea>
         <div id="show">
 
         </div>
         <p id="ctrl">
-            <i id="word">选择图片</i>
-            <input type="file" name="image" accept="image/gif, image/jpeg" onchange="show_image(this.files);">
+            <input type="button" onclick="javascript:$('#sele').click();" value="上传图片">
+            <input id="sele" type="file" name="image" accept="image/gif, image/jpeg" onchange="show_image(this.files);" style="display: none">
             <input id="btn_sub" type="submit" value="发表">
         </p>
     </form>
+        <button id="cancel" onclick="cancel();">取消编辑</button>
         <a href="" class="hello_update" style="text-decoration:none;">
-            <button>更新</button>
+            <button style="position: relative; left:-8%">更新</button>
         </a>
 
     </div>
     <div id="comm_ar"></div>
 
     <script>
+
+        $(function () {
+           checknull()
+        });
+
         function load() {
          var xhr = createXhr();
          xhr.open('get','/get_comm',true);
@@ -162,6 +181,7 @@
          xhr.send(null);
     }
 
+        // 我的记录功能
         function my_history() {
             $.ajax({
                 url:'/history',
@@ -174,6 +194,7 @@
                         html += '<h4>';
                             html += obj.nickname + "发表于:" + obj.up_time;
                         html += '</h4>';
+                        html += "<a href='javascript:void(0);' onclick='del_record("+obj.cid+");'>删除</a>";
                         html += '<p>';
                             html += obj.text;
                         html += '</p>';
@@ -187,9 +208,10 @@
             });
             $("#title").text('我的记录');
         }
-        
+
+        // 即时显示被选图片
         function show_image(f) {
-//            即时显示被选图片
+            checknull();
             for (var i=0; i<f.length; i++){
                 var reader = new FileReader();
                 reader.readAsDataURL(f[i]);
@@ -201,6 +223,40 @@
                 }
 
             }
+        }
+
+        // 取消图片选择时,将显示图片和控件文件移除
+        function cancel() {
+            checknull();
+            $("#show").html("");
+            $("#sele").val('');
+        }
+
+        // 检查发表文字和图片是否为空
+        function checknull() {
+            if(!$("#text_in").val() & !$("#sele").val()){
+                $("#btn_sub").attr('type','button');
+                $("#btn_sub").attr('style','color:gray');
+            }else{
+                $("#btn_sub").attr('type','submit');
+                $("#btn_sub").attr('style','color:black');
+            }
+        }
+
+        // 删除指定记录
+        function del_record(cid) {
+            $.ajax({
+                url:'/del_record',
+                type:'get',
+                data:{"cid":cid},
+                success: function (data) {
+                    console.log(data);
+                    if (data==1){
+                        console.log('完成函数触发');
+                        my_history();
+                    }
+                }
+            });
         }
     </script>
 </body>
