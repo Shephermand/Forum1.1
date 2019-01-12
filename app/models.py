@@ -54,6 +54,7 @@ class Comment(db.Model):
         dic = {
             'cid':self.id,
             'uname': self.user.uname,
+            'uid': self.uid,
             'text': self.text,
             'up_time': str(self.up_time),
             'nickname': self.user.nickname,
@@ -75,6 +76,19 @@ class Answer(db.Model):
         backref='answer',
         lazy='dynamic'
     )
+
+    def __init__(self, anw, cid, uid):
+        self.anw = anw
+        self.cid = cid
+        self.uid = uid
+
+    def to_dic(self):
+        dic = {
+            'id': self.id,
+            'anw': self.anw,
+            'a_time': str(self.a_time),
+        }
+        return dic
 
 
 class Reply(db.Model):

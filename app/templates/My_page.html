@@ -94,13 +94,14 @@
             width:350px;
             height:200px;
         }
-        #comm_img{
+        .comm_img{
             width:350px;
             height:200px;
+            margin-left: 65px;
         }
         #cancel{
             position: relative;
-            left: 34%;
+            left: 35%;
         }
         .comm a{
             text-decoration: none;
@@ -138,8 +139,8 @@
         </p>
     </form>
         <button id="cancel" onclick="cancel();">取消编辑</button>
-        <a href="" class="hello_update" style="text-decoration:none;">
-            <button style="position: relative; left:-8%">更新</button>
+        <a href="javascript:void(0);" class="hello_update" style="text-decoration:none;">
+            <button style="position: relative; left:-8%" onclick="load();">更新</button>
         </a>
 
     </div>
@@ -148,8 +149,56 @@
     <script>
 
         $(function () {
-           checknull()
+           checknull();
         });
+
+        function to_answer(cid,uid) {
+            var anw = $("#in_a" +cid).val();
+            console.log(anw);
+            $.ajax({
+                url: "/answer",
+                type: "post",
+                data: {
+                    "anw": anw,
+                    "cid": cid,
+                    "uid": uid
+                },
+                success: function (data) {
+                    if (data == 1) {
+                        load();
+                    }
+                }
+            });
+        }
+
+        function answer(obj) {
+            $.ajax({
+                url:'/show_answer',
+                type:"get",
+                data:{'cid':obj.cid},
+                dataType:'json',
+                success:function (data) {
+                    var ans = "";
+                    ans += "<input id='in_a"+obj.cid+"' type='text placeholder='你的意见呢?'>";
+                    console.log(obj.cid);
+                    ans += "<button onclick='to_answer("+obj.cid+","+obj.uid+");'>评论</button>";
+                    $("#ta"+obj.cid).html(ans);
+                    if(data==0){
+                        $("#a"+obj.cid).html('无评论');
+                    }else{
+                        var html = "";
+                        $.each(data, function (i,obj2) {
+                            html += "<h5>";
+                            html += "第"+i+"楼的老铁发表于:"+obj2.a_time;
+                            html += "</h5>";
+                            html += "<p>"+obj2.anw+"</p>";
+                        });
+                        $("#a"+obj.cid).html(html);
+                        console.log('what?');
+                    }
+                }
+            });
+        }
 
         function load() {
          var xhr = createXhr();
@@ -171,11 +220,15 @@
                       str += obj.text;
                      str += '</p>';
                      if(obj.image){
-                        str += "<img id='comm_img' src='static/" + obj.image + "'>";
+                        str += "<img class='comm_img' src='static/" + obj.image + "'>";
                      }
+                     str += "<div id='a"+obj.cid+"'></div>";
+                     str += "<p id='ta"+obj.cid+"'></p>";
+                     answer(obj);
                      str += '</div>';
                  });
                  $("#comm_ar").html(str);
+
              }
          };
          xhr.send(null);
@@ -199,7 +252,7 @@
                             html += obj.text;
                         html += '</p>';
                         if(obj.image){
-                            html += "<img id='comm_img' src='static/" + obj.image + "'>";
+                            html += "<img class='comm_img' src='static/" + obj.image + "'>";
                         }
                         html += '</div>';
                     });
