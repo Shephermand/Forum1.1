@@ -28,7 +28,8 @@ def register_view():
         # print(user.uname)
         db.session.add(user)
         session['uname'] = uname
-        return redirect('/')
+        session['pnum'] = 0
+        return redirect('/My_page')
 
 
 @main.route('/check')
@@ -66,6 +67,7 @@ def login_view():
         if user and check_password_hash(user.upwd, upwd):
             session['uname'] = uname
             session['password'] = upwd
+            session['pnum'] = 0
             # url = session.get('url','/')
             url = '/My_page'
             resp = redirect(url)

@@ -7,9 +7,9 @@ import json
 import os
 
 
-def comm_all():
+def comm_all(num):
     # comm = Comment.query.all()
-    comm = db.session.query(Comment).order_by('id desc').limit(20)
+    comm = db.session.query(Comment).order_by('id desc').limit(20).offset(num).all()
     lst = []
     for c in comm:
         dic = c.to_dict()
@@ -29,9 +29,27 @@ def logout_view():
 
 @users.route('/get_comm')
 def get_comm_view():
-    lst = comm_all()
+    num = session['pnum']
+    lst = comm_all(num)
     lst = json.dumps(lst)
     return lst
+
+
+@users.route('/next_page')
+def next_page_view():
+    all_page = db.session.query(Comment).count()
+    if request.args['statu'] == 'pos' and session['pnum'] < all_page:
+        session['pnum'] += 20
+        return json.dumps(1)
+    elif request.args['statu'] == 'ngtv':
+        if session['pnum'] > 0:
+            session['pnum'] -= 20
+            return json.dumps(1)
+        return json.dumps(0)
+    else:
+        return json.dumps(2)
+
+
 
 
 @users.route('/history')
@@ -39,7 +57,7 @@ def get_history():
     uname = session['uname']
     user = User.query.filter_by(uname=uname).first()
     upwd = session['password']
-    if user and check_password_hash(user.upwd,upwd):
+    if user and check_password_hash(user.upwd, upwd):
         #执行后端业务
         lst = []
         comms = user.comments
@@ -57,10 +75,14 @@ def delete_record():
     comm = Comment.query.filter_by(id=cid).first()
     user = comm.user.uname
     if 'uname' in session and user == session['uname']:
-        # 完成删除文章时,连带用户图片从本机中删除
-        path = os.path.dirname(os.path.dirname(__file__)) + '/static/'
-        path = os.path.join(path, comm.image)
-        os.remove(path)
+        if comm.image:
+            # 完成删除文章时,连带用户图片从本机中删除
+            path = os.path.dirname(os.path.dirname(__file__)) + '/static/'
+            path = os.path.join(path, comm.image)
+            os.remove(path)
+        anws = comm.answers
+        for a in anws:
+            db.session.delete(a)
         db.session.delete(comm)
         return json.dumps(1)
     return json.dumps(0)
@@ -71,7 +93,7 @@ def answer_views():
     anw = request.form['anw']
     print(anw)
     cid = request.form['cid']
-    uid = request.form['uid']
+    uid = User.query.filter_by(uname=session['uname']).first().id
     answer = Answer(anw, cid, uid)
     db.session.add(answer)
     return json.dumps(1)
@@ -82,7 +104,6 @@ def show_answer():
     cid = request.args['cid']
     anws = Answer.query.filter_by(cid=cid).all()
     if not anws:
-        print('空!')
         return json.dumps(0)
     lst = []
     for a in anws:

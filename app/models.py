@@ -87,6 +87,7 @@ class Answer(db.Model):
             'id': self.id,
             'anw': self.anw,
             'a_time': str(self.a_time),
+            'uname': self.user.nickname
         }
         return dic
 

@@ -65,7 +65,7 @@
             left: 30%;
         }
         .comm{
-            width:500px;
+            width:550px;
             border: 2px dashed #ff0e93;
             background-color: aqua;
             margin-top: 10px;
@@ -95,8 +95,8 @@
             height:200px;
         }
         .comm_img{
-            width:350px;
-            height:200px;
+            width:50%;
+            height:auto;
             margin-left: 65px;
         }
         #cancel{
@@ -109,6 +109,16 @@
             position: relative;
             top:-47px;
             right:-90%;
+        }
+        #prior{
+            position: fixed;
+            top:85%;
+            left:5%;
+        }
+        #next{
+            position: fixed;
+            top:85%;
+            right:5%;
         }
 
     </style>
@@ -139,29 +149,48 @@
         </p>
     </form>
         <button id="cancel" onclick="cancel();">取消编辑</button>
-        <a href="javascript:void(0);" class="hello_update" style="text-decoration:none;">
-            <button style="position: relative; left:-8%" onclick="load();">更新</button>
-        </a>
+        <!--<a href="javascript:void(0);"  style="text-decoration:none;">-->
+            <button style="position: fixed; left:25%" onclick="load();">更新</button>
+        <!--</a>-->
 
     </div>
+    <a name="1"></a>
     <div id="comm_ar"></div>
-
+    <a class="chang_page" id="prior" href="#1" onclick="next('ngtv');"><<上一页</a>
+    <a class="chang_page" id="next" href="#1" onclick="next('pos');">下一页>></a>
     <script>
 
         $(function () {
            checknull();
         });
 
-        function to_answer(cid,uid) {
+
+        function next(flag) {
+            $.ajax({
+                url:'/next_page',
+                type:'get',
+                data: 'statu='+flag,
+                success: function (data) {
+                    if(data==0){
+                        alert('这已经是首页了!');
+                    }
+                    if(data==2){
+                        alert('已是最后一页')
+                    }
+                    load();
+                }
+            })
+        }
+
+
+        function to_answer(cid) {
             var anw = $("#in_a" +cid).val();
-            console.log(anw);
             $.ajax({
                 url: "/answer",
                 type: "post",
                 data: {
                     "anw": anw,
                     "cid": cid,
-                    "uid": uid
                 },
                 success: function (data) {
                     if (data == 1) {
@@ -179,28 +208,28 @@
                 dataType:'json',
                 success:function (data) {
                     var ans = "";
-                    ans += "<input id='in_a"+obj.cid+"' type='text placeholder='你的意见呢?'>";
+                    ans += "<input id='in_a"+obj.cid+"' type='text' placeholder='你的意见呢?'>";
                     console.log(obj.cid);
-                    ans += "<button onclick='to_answer("+obj.cid+","+obj.uid+");'>评论</button>";
+                    ans += "<button onclick='to_answer("+obj.cid+");'>评论</button>";
                     $("#ta"+obj.cid).html(ans);
                     if(data==0){
                         $("#a"+obj.cid).html('无评论');
                     }else{
                         var html = "";
                         $.each(data, function (i,obj2) {
-                            html += "<h5>";
-                            html += "第"+i+"楼的老铁发表于:"+obj2.a_time;
+                            html += "<h5 style='margin-bottom: -12px'>";
+                            html += "第"+(i+1)+"楼的"+obj2.uname+"发表于:"+obj2.a_time;
                             html += "</h5>";
-                            html += "<p>"+obj2.anw+"</p>";
+                            html += "<p style='font-size: 13px'>"+obj2.anw+"</p>";
                         });
                         $("#a"+obj.cid).html(html);
-                        console.log('what?');
                     }
                 }
             });
         }
 
         function load() {
+            $(".chang_page").attr('style','');
          var xhr = createXhr();
          xhr.open('get','/get_comm',true);
          xhr.onreadystatechange = function () {
@@ -222,6 +251,7 @@
                      if(obj.image){
                         str += "<img class='comm_img' src='static/" + obj.image + "'>";
                      }
+                     str += "<hr style='border: 3px groove yellow;'></hr>";
                      str += "<div id='a"+obj.cid+"'></div>";
                      str += "<p id='ta"+obj.cid+"'></p>";
                      answer(obj);
@@ -236,6 +266,7 @@
 
         // 我的记录功能
         function my_history() {
+            $(".chang_page").attr('style','display:none;');
             $.ajax({
                 url:'/history',
                 type:'get',
@@ -254,6 +285,10 @@
                         if(obj.image){
                             html += "<img class='comm_img' src='static/" + obj.image + "'>";
                         }
+                        html += "<hr style='border: 3px groove rosybrown;'></hr>";
+                        html += "<div id='a"+obj.cid+"'></div>";
+                        html += "<p id='ta"+obj.cid+"'></p>";
+                        answer(obj);
                         html += '</div>';
                     });
                     $("#comm_ar").html(html);
@@ -280,9 +315,9 @@
 
         // 取消图片选择时,将显示图片和控件文件移除
         function cancel() {
-            checknull();
             $("#show").html("");
             $("#sele").val('');
+            checknull();
         }
 
         // 检查发表文字和图片是否为空
