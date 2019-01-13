@@ -8,11 +8,11 @@
 
     <style>
         #nav,#main{
-			width:650px;
+			width:800px;
 			margin:0 auto;
             position: relative;
             top:auto;
-            left: auto;
+            left: -6%;
 		}
 		#main{
 			height:30px;
@@ -31,7 +31,7 @@
 			background-color: #ffae54;
 			text-align: center;
 			line-height: 50px;
-			margin-right:10px;
+			margin-right:36px;
             text-decoration: none;
 		}
 		#nav .no-margin{
@@ -42,27 +42,27 @@
 		}
         #text_in{
             font-size:20px;
-            width:500px;
+            width:567px;
             height:100px;
-            margin: 0 430px;
             position: relative;
             top: auto;
-            left: -2%;
+            left: 17%;
         }
         #btn_sub{
             margin-left: -80px;
             position: relative;
             left: 32%;
+            font-size: 25px;
         }
         #ctrl{
             position: relative;
             left: 50%;
         }
         #comm_ar{
-            width: 500px;
+            width: 550px;
             position: relative;
             top:0;
-            left: 30%;
+            left: 17%;
         }
         .comm{
             width:550px;
@@ -71,7 +71,7 @@
             margin-top: 10px;
         }
         p{
-            width:415px;
+            width:260px;
             margin-left: 20px;
         }
         h4{
@@ -80,7 +80,7 @@
         .hello_update{
             width: 500px;
             position: relative;
-            left: 30%;
+            left: 15%;
         }
         #show{
             position:relative;
@@ -102,6 +102,7 @@
         #cancel{
             position: relative;
             left: 35%;
+            font-size: 25px;
         }
         .comm a{
             text-decoration: none;
@@ -112,13 +113,19 @@
         }
         #prior{
             position: fixed;
-            top:85%;
-            left:5%;
+            top:75%;
+            right:3%;
+            font-size: 25px;
         }
         #next{
             position: fixed;
             top:85%;
-            right:5%;
+            right:3%;
+            font-size: 25px;
+        }
+        .answs{
+            width:400px;
+            height: 20px;
         }
 
     </style>
@@ -143,14 +150,14 @@
 
         </div>
         <p id="ctrl">
-            <input type="button" onclick="javascript:$('#sele').click();" value="上传图片">
+            <input type="button" style="font-size: 25px;" onclick="javascript:$('#sele').click();" value="上传图片">
             <input id="sele" type="file" name="image" accept="image/gif, image/jpeg" onchange="show_image(this.files);" style="display: none">
             <input id="btn_sub" type="submit" value="发表">
         </p>
     </form>
         <button id="cancel" onclick="cancel();">取消编辑</button>
         <!--<a href="javascript:void(0);"  style="text-decoration:none;">-->
-            <button style="position: fixed; left:25%" onclick="load();">更新</button>
+            <button style="position: fixed; right:4%; font-size: 25px;" onclick="load();">更新</button>
         <!--</a>-->
 
     </div>
@@ -183,7 +190,20 @@
         }
 
 
+        function checkanw(cid) {
+            if(!$("#in_a"+cid).val()){
+                $("#ta"+cid).attr('type','button');
+                return true
+            }else{
+                $("#ta"+cid).attr('type','submit');
+                return false
+            }
+        }
+
         function to_answer(cid) {
+            if(checkanw(cid)){
+                return null
+            }
             var anw = $("#in_a" +cid).val();
             $.ajax({
                 url: "/answer",
@@ -208,9 +228,9 @@
                 dataType:'json',
                 success:function (data) {
                     var ans = "";
-                    ans += "<input id='in_a"+obj.cid+"' type='text' placeholder='你的意见呢?'>";
+                    ans += "<input class='answs' id='in_a"+obj.cid+"' type='text' placeholder='你的意见呢?'>";
                     console.log(obj.cid);
-                    ans += "<button onclick='to_answer("+obj.cid+");'>评论</button>";
+                    ans += "<button id='ta"+obj.cid+"' onclick='to_answer("+obj.cid+");'>评论</button>";
                     $("#ta"+obj.cid).html(ans);
                     if(data==0){
                         $("#a"+obj.cid).html('无评论');
@@ -317,12 +337,13 @@
         function cancel() {
             $("#show").html("");
             $("#sele").val('');
+            $("#text_in").val("");
             checknull();
         }
 
         // 检查发表文字和图片是否为空
         function checknull() {
-            if(!$("#text_in").val() & !$("#sele").val()){
+            if(!$("#text_in").val() && !$("#sele").val()){
                 $("#btn_sub").attr('type','button');
                 $("#btn_sub").attr('style','color:gray');
             }else{

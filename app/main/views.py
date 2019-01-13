@@ -28,6 +28,7 @@ def register_view():
         # print(user.uname)
         db.session.add(user)
         session['uname'] = uname
+        session['password'] = upwd
         session['pnum'] = 0
         return redirect('/My_page')
 
