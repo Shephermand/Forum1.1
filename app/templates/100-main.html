@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+    <link rel="shortcut icon" href="/static/images/bitbug_favicon.ico" type="image/x-icon" />
+    <link href="/static/css/base.css" rel="stylesheet">
+    <link href="/static/css/index.css" rel="stylesheet">
+    <script src="/static/js/js_mypage.js"></script>
+
+
+</head>
+<body>
+    <!--menu begin-->
+    <div class="menu">
+      <nav class="nav" id="topnav">
+        <h1 class="logo"><a href="/">开心词典</a></h1>
+        <li><a href="/">首页</a></li>
+        <li><a href="">功能１</a></li>
+        <li><a href="/My_page" onclick="load();">空间主页</a></li>
+        <li><a a href="/My_page" onclick="my_history();">空间记录</a> </li>
+        <li><a href="">网盘</a> </li>
+        <li><a href="">我的资料</a> </li>
+        <li><a href="">功能６</a></li>
+      </nav>
+
+
+    <form action="/" method="post">
+        <p>
+            <select name="langv" id="">
+                <option value="en">汉译英</option>
+                <option value="zh">英译汉</option>
+            </select>
+        </p>
+        <p class="fanyi">
+            要翻译的内容：<input type="text" name="check" value="{{src}}" style="width: 500px;height: 200px">
+        </p>
+            翻译好的内容：<input type="text" name="neirong" value="{{dst}}" style="width: 500px;height: 200px">
+        <p class="fanyi">
+            <input type="submit">
+            <a href="/main" style="border: 1px solid #B7B7B7;padding: 4px;border-radius: 5px">清空</a>
+            <button>保存</button>
+        </p>
+
+    </form>
+
+    <a class="l_rlink" href="/login" id="login" target="_blank">登录</a>
+    <a class="l_rlink" href="/register" id="register" target="_blank">注册</a>
+    </div>
+<script>
+    $(function () {
+        console.log('Test!');
+        checkIslog();
+    });
+</script>
+</body>
+</html>

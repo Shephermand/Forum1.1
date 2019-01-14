@@ -111,4 +111,32 @@ def show_answer():
     return json.dumps(lst)
 
 
+@users.route('/islog')
+def islog():
+    if 'uname' in session:
+        return json.dumps(1)
+    else:
+        return json.dumps(0)
+
+
+@users.route('/skydisc', methods=["GET", "POST"])
+def sky_views():
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
