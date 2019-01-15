@@ -1,10 +1,11 @@
 from . import users
 from .. import db
 from ..models import *
-from flask import session, redirect, request
+from flask import session, redirect, request, render_template
 from werkzeug.security import check_password_hash
 import json
 import os
+import shutil
 
 
 def comm_all(num):
@@ -119,9 +120,46 @@ def islog():
         return json.dumps(0)
 
 
-@users.route('/skydisc', methods=["GET", "POST"])
-def sky_views():
-    pass
+@users.route('/skydisk')
+def skydisk():
+    lst = os.listdir(session['upath'])
+    if 'index' not in request.args:
+        session['seek'] = session['upath']
+        print(lst)
+        path = session['seek']
+        return render_template('Skydisk.html', dirlist=locals())
+    else:
+        index = request.args['index']
+        path = os.path.join(session['seek'], lst[int(index)])
+        session['seek'] = path
+        lst = os.listdir(path)
+        return render_template('Skydisk.html', dirlist=locals())
+
+
+@users.route('/makefile')
+def makefile():
+    if request.args['flag'] == 'mkdir':
+        dirName = request.args['dirName']
+        upath = session['seek']
+        newpath = os.path.join(upath, dirName)
+        if os.path.exists(newpath):
+            return json.dumps(0)
+        os.mkdir(newpath)
+        return json.dumps(1)
+    elif request.args['flag'] == 'remove':
+        dirName = request.args['delfile']
+        upath = session['seek']
+        delpath = os.path.join(upath, dirName)
+        print(delpath)
+        if not os.path.exists(delpath):
+            return json.dumps(0)
+        shutil.rmtree(delpath)
+        return json.dumps(1)
+
+
+@users.route('/topath')
+def topath():
+    return json.dumps()
 
 
 

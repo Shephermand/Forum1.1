@@ -23,6 +23,7 @@ def create_space():
     base_path = os.path.dirname(os.path.dirname(__file__))
     sec_path = os.path.join(base_path, 'static/Skydisk')
     path = os.path.join(sec_path, session['uname'])
+    session['upath'] = path
     if not os.path.exists(path):
         os.mkdir(path)
     return None

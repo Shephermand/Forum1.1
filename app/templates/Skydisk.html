@@ -3,13 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <title>网盘</title>
+    <script src="/static/js/cre_xhr.js"></script>
+    <script src="/static/js/jquery-1.11.3.js"></script>
+    <script src="/static/js/js_skydisk.js"></script>
 </head>
 <body>
 <h1>天空网盘</h1>
 <form action="/push_file" method="post" enctype="multipart/form-data">
     <div>
         <p>
-            <button type="button">新建文件夹</button>
+            <button type="button" onclick="newdir();">新建文件夹</button>
         </p>
         <p>
             <button type="button">删除</button>
@@ -18,6 +21,12 @@
             上传文件: <input type="file">
         </p>
     </div>
+    <h5>文件列表</h5>
+    <ul>
+        {% for f in dirlist %}
+        <li><a href="/skydisk?index={{ loop.index }}">{{ f }}</a></li>
+        {% endfor %}
+    </ul>
 </form>
 </body>
 </html>
