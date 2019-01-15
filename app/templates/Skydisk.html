@@ -12,19 +12,21 @@
 <form action="/push_file" method="post" enctype="multipart/form-data">
     <div>
         <p>
-            <button type="button" onclick="newdir();">新建文件夹</button>
+            <button type="button" onclick="newdir('{{ dirlist.abs_path }}');">新建文件夹</button>
         </p>
         <p>
             <button type="button">删除</button>
         </p>
         <p>
-            上传文件: <input type="file">
+            上传文件: <input type="file" name="file">
+            <input type="hidden" name="path" value="{{ dirlist.abs_path }}">
         </p>
+        <input type="submit" value="提交">
     </div>
     <h5>文件列表</h5>
     <ul>
-        {% for f in dirlist %}
-        <li><a href="/skydisk?index={{ loop.index }}">{{ f }}</a></li>
+        {% for f in dirlist.lst %}
+        <li><a href="/skydisk?index={{ dirlist.abs_path }}/{{ f }}">{{ f }}</a></li>
         {% endfor %}
     </ul>
 </form>

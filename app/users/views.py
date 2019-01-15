@@ -122,17 +122,15 @@ def islog():
 
 @users.route('/skydisk')
 def skydisk():
-    lst = os.listdir(session['upath'])
     if 'index' not in request.args:
-        session['seek'] = session['upath']
-        print(lst)
-        path = session['seek']
+        lst = os.listdir(session['upath'])
+        abs_path = session['upath']
+        session['upath'] = abs_path
         return render_template('Skydisk.html', dirlist=locals())
     else:
         index = request.args['index']
-        path = os.path.join(session['seek'], lst[int(index)])
-        session['seek'] = path
-        lst = os.listdir(path)
+        lst = os.listdir(index)
+        abs_path = index
         return render_template('Skydisk.html', dirlist=locals())
 
 
@@ -140,7 +138,7 @@ def skydisk():
 def makefile():
     if request.args['flag'] == 'mkdir':
         dirName = request.args['dirName']
-        upath = session['seek']
+        upath = request.args['abs_path']
         newpath = os.path.join(upath, dirName)
         if os.path.exists(newpath):
             return json.dumps(0)
@@ -148,7 +146,7 @@ def makefile():
         return json.dumps(1)
     elif request.args['flag'] == 'remove':
         dirName = request.args['delfile']
-        upath = session['seek']
+        upath = request.args['abs_path']
         delpath = os.path.join(upath, dirName)
         print(delpath)
         if not os.path.exists(delpath):
@@ -157,9 +155,16 @@ def makefile():
         return json.dumps(1)
 
 
-@users.route('/topath')
+@users.route('/push_file', methods=["POST"])
 def topath():
-    return json.dumps()
+    path = request.form['path']
+    f = request.files['file']
+    fname = f.filename
+    save_path = os.path.join(path, fname)
+    f.save(save_path)
+    lst = os.listdir(path)
+    abs_path = path
+    return render_template('Skydisk.html', dirlist=locals())
 
 
 
