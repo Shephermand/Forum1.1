@@ -14,21 +14,26 @@
         <p>
             <button type="button" onclick="newdir('{{ dirlist.abs_path }}');">新建文件夹</button>
         </p>
-        <p>
-            <button type="button">删除</button>
-        </p>
+
         <p>
             上传文件: <input type="file" name="file">
             <input type="hidden" name="path" value="{{ dirlist.abs_path }}">
         </p>
         <input type="submit" value="提交">
+</form>
     </div>
     <h5>文件列表:{{ dirlist.uroot }}</h5>
+<form action="/delfiles" method="post">
     <ul>
         {% for f in dirlist.lst %}
-        <li><a href="/skydisk?index={{ dirlist.abs_path }}/{{ f }}">{{ f }}</a></li>
+            <li>
+                <input type="checkbox" name="del{{ loop.index0 }}" value="{{ dirlist.abs_path }}/{{ f }}">
+                <input type="hidden" name="now_path" value="{{ dirlist.abs_path }}">
+                <a href="/skydisk?index={{ dirlist.abs_path }}/{{ f }}">{{ f }}</a>
+            </li>
         {% endfor %}
     </ul>
+        <input type="submit" value="删除所选文件">
 </form>
 </body>
 </html>

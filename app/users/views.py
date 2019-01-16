@@ -174,6 +174,23 @@ def topath():
     abs_path = path
     return render_template('Skydisk.html', dirlist=locals())
 
+@users.route('/delfiles', methods=["POST"])
+def delfile():
+    now_dir = request.form['now_path']
+    len_lst = len(os.listdir(now_dir))
+    for n in range(len_lst):
+        d_id = 'del'+str(n)
+        if d_id in request.form:
+            f = request.form[d_id]
+            if os.path.isdir(f):
+                shutil.rmtree(f)
+            else:
+                os.remove(f)
+    uroot = '/'+'/'.join(now_dir.split('/')[9:])
+    lst = os.listdir(now_dir)
+    abs_path = now_dir
+    return render_template('Skydisk.html', dirlist=locals())
+
 
 
 

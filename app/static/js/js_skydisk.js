@@ -14,7 +14,7 @@ function newdir(abs_path){
         },
         success: function (data) {
             if(data==1){
-                alert('创建成功!')
+                location.reload();
             }
         }
     });
