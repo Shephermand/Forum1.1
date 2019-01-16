@@ -1,7 +1,7 @@
 from . import users
 from .. import db
 from ..models import *
-from flask import session, redirect, request, render_template
+from flask import session, redirect, request, render_template, send_file, send_from_directory, make_response
 from werkzeug.security import check_password_hash
 import json
 import os
@@ -49,8 +49,6 @@ def next_page_view():
         return json.dumps(0)
     else:
         return json.dumps(2)
-
-
 
 
 @users.route('/history')
@@ -126,9 +124,17 @@ def skydisk():
         lst = os.listdir(session['upath'])
         abs_path = session['upath']
         session['upath'] = abs_path
+        uroot = '/'
         return render_template('Skydisk.html', dirlist=locals())
     else:
         index = request.args['index']
+        frot = index.split('/')[0:-1]
+        frot_path = '/'+'/'.join(frot)
+        filename = index.split('/')[-1]
+        uroot = index.split('/')[9:]
+        uroot = '/' + '/'.join(uroot)
+        if os.path.isfile(index):
+            return send_from_directory(frot_path, filename, as_attachment=True)
         lst = os.listdir(index)
         abs_path = index
         return render_template('Skydisk.html', dirlist=locals())
@@ -159,6 +165,8 @@ def makefile():
 def topath():
     path = request.form['path']
     f = request.files['file']
+    uroot = path.split('/')[9:]
+    uroot = '/' + '/'.join(uroot)
     fname = f.filename
     save_path = os.path.join(path, fname)
     f.save(save_path)

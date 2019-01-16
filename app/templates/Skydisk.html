@@ -23,7 +23,7 @@
         </p>
         <input type="submit" value="提交">
     </div>
-    <h5>文件列表</h5>
+    <h5>文件列表:{{ dirlist.uroot }}</h5>
     <ul>
         {% for f in dirlist.lst %}
         <li><a href="/skydisk?index={{ dirlist.abs_path }}/{{ f }}">{{ f }}</a></li>
