@@ -3,37 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <title>网盘</title>
+    <link href="/static/css/sky.css" rel="stylesheet">
     <script src="/static/js/cre_xhr.js"></script>
     <script src="/static/js/jquery-1.11.3.js"></script>
     <script src="/static/js/js_skydisk.js"></script>
 </head>
 <body>
 <h1>天空网盘</h1>
-<form action="/push_file" method="post" enctype="multipart/form-data">
+    <form action="/push_file" method="post" enctype="multipart/form-data">
     <div>
         <p>
             <button type="button" onclick="newdir('{{ dirlist.abs_path }}');">新建文件夹</button>
         </p>
 
         <p>
-            上传文件: <input type="file" name="file">
+{#            上传文件: <input type="file" name="file" id="leading_in" class="hide" onchange="goodfile();">#}
             <input type="hidden" name="path" value="{{ dirlist.abs_path }}">
         </p>
         <input type="submit" value="提交">
-</form>
     </div>
+    </form>
     <h5>文件列表:{{ dirlist.uroot }}</h5>
 <form action="/delfiles" method="post">
     <ul>
         {% for f in dirlist.lst %}
             <li>
-                <input type="checkbox" name="del{{ loop.index0 }}" value="{{ dirlist.abs_path }}/{{ f }}">
+                <input type="checkbox" name="del{{ loop.index0 }}" value="{{ dirlist.abs_path }}/{{ f.fname }}">
                 <input type="hidden" name="now_path" value="{{ dirlist.abs_path }}">
-                <a href="/skydisk?index={{ dirlist.abs_path }}/{{ f }}">{{ f }}</a>
+                <a href="/skydisk?index={{ dirlist.abs_path }}/{{ f.fname }}">{{ f.fname }}</a>
+                <span>创建时间:{{ f.ctime }}</span>
             </li>
         {% endfor %}
     </ul>
         <input type="submit" value="删除所选文件">
+    <!--批量上传-->
+    <input type="file" id="leading_in" class="hide" onchange="nihao()">
+    <!--上传进度条-->
+    <div class="upfile_progress hide">
+        <div> 上传进度：<progress></progress></div>
+        <p id="progress">0 bytes</p> <p id="info"></p>
+    </div>
+
 </form>
 </body>
 </html>

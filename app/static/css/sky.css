@@ -1,0 +1,6 @@
+progress{
+    background-color: #56BE64;
+
+}
+progress::-webkit-progress-bar { background: #ccc; }
+progress::-webkit-progress-value { background: #56BE64; }
