@@ -12,7 +12,6 @@ def createApp():
     app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
     app.config['SECRET_KEY'] = "zheshijiyezhongwenmiyao"
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-
     # 关联db与app
     db.init_app(app)
 

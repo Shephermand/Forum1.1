@@ -1,8 +1,9 @@
 from . import users
 from .. import db
 from ..models import *
-from flask import session, redirect, request, render_template, send_file, send_from_directory, make_response
+from flask import session, redirect, request, render_template, send_file, send_from_directory, Response
 from werkzeug.security import check_password_hash
+from werkzeug.utils import secure_filename
 import json
 import os
 import shutil
@@ -16,6 +17,24 @@ def comm_all(num):
         dic = c.to_dict()
         lst.append(dic)
     return lst
+
+
+# 使用文件流传输
+def send_file(filepath):
+    with open(filepath, 'rb') as f:
+        while True:
+            data = f.read(10*1024*1024)
+            if not data:
+                break
+            yield data
+
+
+def c_time(bpath, lst):
+    create_time = []
+    for f in lst:
+        ct = os.path.getctime(os.path.join(bpath, f))
+        create_time.append(ct)
+    return create_time
 
 
 @users.route('/logout')
@@ -123,6 +142,7 @@ def skydisk():
     if 'index' not in request.args:
         lst = os.listdir(session['upath'])
         abs_path = session['upath']
+        # create_time = os.path.getctime(abs_path)
         session['upath'] = abs_path
         uroot = '/'
         return render_template('Skydisk.html', dirlist=locals())
@@ -134,9 +154,14 @@ def skydisk():
         uroot = index.split('/')[9:]
         uroot = '/' + '/'.join(uroot)
         if os.path.isfile(index):
-            return send_from_directory(frot_path, filename, as_attachment=True)
+            response = Response(send_file(index), content_type='application/octet-stream')
+            response.headers['Content-disposition'] = 'attachment; filename=%s' % filename.encode().decode('latin-1')
+            response.headers['Content-Length'] = os.path.getsize(index)
+            return response
+            # return send_from_directory(frot_path, filename, as_attachment=True)
         lst = os.listdir(index)
         abs_path = index
+        # create_time = c_time(abs_path, lst)
         return render_template('Skydisk.html', dirlist=locals())
 
 
@@ -164,15 +189,17 @@ def makefile():
 @users.route('/push_file', methods=["POST"])
 def topath():
     path = request.form['path']
+    abs_path = path
+    # create_time = c_time(abs_path, lst)
     f = request.files['file']
+    lst = os.listdir(path)
     uroot = path.split('/')[9:]
     uroot = '/' + '/'.join(uroot)
     fname = f.filename
     save_path = os.path.join(path, fname)
     f.save(save_path)
-    lst = os.listdir(path)
-    abs_path = path
     return render_template('Skydisk.html', dirlist=locals())
+
 
 @users.route('/delfiles', methods=["POST"])
 def delfile():
@@ -189,6 +216,7 @@ def delfile():
     uroot = '/'+'/'.join(now_dir.split('/')[9:])
     lst = os.listdir(now_dir)
     abs_path = now_dir
+    # create_time = c_time(abs_path, lst)
     return render_template('Skydisk.html', dirlist=locals())
 
 
