@@ -217,7 +217,8 @@ def topath():
     fname = f.filename
     save_path = os.path.join(path, fname)
     f.save(save_path)
-    return render_template('Skydisk.html', dirlist=locals())
+    # return render_template('Skydisk.html', dirlist=locals())
+    return json.dumps(1)
 
 
 @users.route('/delfiles', methods=["POST"])
@@ -237,7 +238,8 @@ def delfile():
     abs_path = now_dir
     lst = make_data(abs_path, os.listdir(now_dir))
     # create_time = c_time(abs_path, lst)
-    return render_template('Skydisk.html', dirlist=locals())
+    # return render_template('Skydisk.html', dirlist=locals())
+    return json.dumps(1)
 
 
 

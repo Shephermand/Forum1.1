@@ -4,3 +4,15 @@ progress{
 }
 progress::-webkit-progress-bar { background: #ccc; }
 progress::-webkit-progress-value { background: #56BE64; }
+
+#pbar{
+    width: 310px;
+    border: 1px solid;
+    display: none;
+    padding-right: 7px;
+}
+
+#processBar{
+    width:100%;
+    margin-right: 5px;
+}

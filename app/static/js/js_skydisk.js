@@ -20,67 +20,94 @@ function newdir(abs_path){
     });
 }
 
-function nihao() {
-    alert('你好');
+//上传文件
+function uploadFiles(){
+
+    var formData = new FormData();
+    var isUpload = window.confirm("是否确认上传此文件");
+    if(!isUpload){
+        return 0;
+    }
+     formData.append("file",$("#uploadFile")[0].files[0]);//append()里面的第一个参数file对应permission/upload里面的参数file
+     formData.append("path", $("#hidden").val());
+     $("#pbar").attr('style','display:block');
+
+     $.ajax({
+        type:"post",
+        async:true,  //这里要设置异步上传，才能成功调用myXhr.upload.addEventListener('progress',function(e){}),progress的回掉函数
+        Accept:'text/html;charset=UTF-8',
+        data:formData,
+        contentType:"multipart/form-data",
+        url: '/push_file',
+        processData: false, // 告诉jQuery不要去处理发送的数据
+        contentType: false, // 告诉jQuery不要去设置Content-Type请求头
+        xhr:function(){
+        myXhr = $.ajaxSettings.xhr();
+        if(myXhr.upload){ // check if upload property exists
+            myXhr.upload.addEventListener('progress',function(e){
+                var loaded = e.loaded;                  //已经上传大小情况
+                var total = e.total;                      //附件总大小
+                var percent = Math.floor(100*loaded/total)+"%";     //已经上传的百分比
+                console.log("已经上传了："+percent);
+                $("#processBar").css("width",percent);
+                $("#percen").html(percent)
+            }, false); // for handling the progress of the upload
+        }
+        return myXhr;
+        },
+        success:function(data){
+            console.log("上传成功!!!!");
+            location.reload();
+        },
+        error:function(){
+            alert("上传失败！");
+        }
+    });
 }
 
-function topath(index) {
-    console.log(index);
+
+function deleteFile() {
+    console.log("进入函数");
+    var v = $("#deldata").serializeArray();
+    console.log(v);
+    var form = new FormData();
+    $.each(v, function (i,obj) {
+        console.log('进入第二函数');
+        console.log(this.name);
+        console.log(this.value);
+        form.append(this.name, this.value);
+    });
+    console.log(form);
+
+    $.ajax({
+        type:"post",
+        url:"/delfiles",
+        contentType:"multipart/form-data",
+        data:form,
+        success: function (data) {
+            location.reload();
+        }
+    })
 }
 
 
-// 导入文件
-function goodfile(){
-    console.log('进入处理!');
-    // var exp = /.xls$|.xlsx$/;
-    // if(exp.exec($(this).val())==null){
-    //     $(this).val('');
-    //     layer.msg('格式错误',{icon: 2});
-    //     return false;
-    // };
-    // var data = new FormData();
-    // data.append('file', $('#leading_in')[0].files[0]);
-    // data.append('vote_id', $('input[name="vote_id"]').val());
-    //
-    // var file = this.files[0];
-    // name = file.name;
-    // size = file.size;
-    // type = file.type;
-    // url = window.URL.createObjectURL(file);
-    //
-    // $.ajax({
-    //     url: 'index.php?c=Vote&a=importExcel',
-    //     type: 'post',
-    //     data: data,
-    //     cache: false,
-    //     contentType: false,
-    //     processData: false,
-    //     crossDomain: true,
-    //     xhrFields: {withCredentials: true},
-    //     dataType: 'json',
-    //     beforeSend: function(){ },
-    //     xhr: function(){
-    //         myXhr = $.ajaxSettings.xhr();
-    //         if(myXhr.upload){
-    //             myXhr.upload.addEventListener('progress',progressHandlingFunction, false);
-    //         }
-    //         return myXhr;
-    //         },
-    //     success: function(res) {
-    //         if (res.code == 200) {
-    //             layer.msg('上传成功', {icon :1});
-    //             setTimeout(function(){
-    //                 location.reload();
-    //             },1000);
-    //         }else{
-    //             layer.msg(res.msg, {icon: 2});
-    //         }
-    //     },
-    // });
-};
 
-function progressHandlingFunction(e) {
-    if (e.lengthComputable) {
-        $('progress').attr({value : e.loaded, max : e.total});
-        var percent = e.loaded/e.total*100;
-        $('#progress').html(((e.loaded/1024)/1024).toFixed(2) + "/" + ((e.total/1024)/1024).toFixed(2)+" MB. " + percent.toFixed(2) + "%"); } }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
