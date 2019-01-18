@@ -82,7 +82,8 @@ function deleteFile() {
     $.ajax({
         type:"post",
         url:"/delfiles",
-        contentType:"multipart/form-data",
+        contentType: false,
+        processData: false,
         data:form,
         success: function (data) {
             location.reload();

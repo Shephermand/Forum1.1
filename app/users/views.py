@@ -51,7 +51,6 @@ def make_data(bpath, lst):
     return data
 
 
-
 @users.route('/logout')
 def logout_view():
     resp = redirect('/')
@@ -91,7 +90,7 @@ def get_history():
     user = User.query.filter_by(uname=uname).first()
     upwd = session['password']
     if user and check_password_hash(user.upwd, upwd):
-        #执行后端业务
+        # 执行后端业务
         lst = []
         comms = user.comments
         for c in comms:
@@ -175,8 +174,6 @@ def skydisk():
             response.headers['Content-Length'] = os.path.getsize(index)
             print('已发送请求1')
             return response
-            # return send_from_directory(frot_path, filename, as_attachment=True)
-        # lst = os.listdir(index)
         abs_path = index
         lst = make_data(abs_path, os.listdir(index))
         # create_time = c_time(abs_path, lst)
