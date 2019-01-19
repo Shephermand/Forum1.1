@@ -1,5 +1,6 @@
 from . import db
 
+
 class User(db.Model):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
@@ -98,7 +99,7 @@ class Reply(db.Model):
     rpl = db.Column(db.String(150), nullable=False)
     r_time = db.Column(db.TIMESTAMP, nullable=False)
     uid = db.Column(db.Integer, db.ForeignKey('user.id'))
-    aid = db.Column(db.Integer,db.ForeignKey('answer.id'))
+    aid = db.Column(db.Integer, db.ForeignKey('answer.id'))
 
 
 

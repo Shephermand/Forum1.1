@@ -106,17 +106,20 @@ h4{
 #prior{
     position: relative;
     top:75%;
+    margin-left: -9px;
+    color: black;
 }
 #next{
     position: relative;
     top:85%;
+    color: black;
 }
 #ctrl_upn{
     width: 100px;
     position: fixed;
     right:28%;
     font-size: 18px;
-    background-image:url('/static/images/timg.jpeg');
+    background-image:url('/static/images/kjp.jpg');
     background-size: 100px;
 }
 .answs{

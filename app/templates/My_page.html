@@ -24,12 +24,11 @@
         <li><a href="/skydisk">网盘</a> </li>
         <li><a href="">个人资料</a> </li>
         <li><a href="release.html">功能６</a></li>
-          <a href="javascript:void(0);">欢迎,{{nickname}}</a>
-          <a href="/logout" class="no-margin">退出</a>
+          <a style="color: #F1F1F1" href="javascript:void(0);">欢迎,{{nickname}}</a>
+          <a style="color: #F1F1F1" href="/logout" class="no-margin">退出</a>
       </nav>
     </div>
     <div id="main"></div>
-    <h3 class="hello_update">你好,{{nickname}}</h3>
     <div>
     <form action="/My_page" method="post" enctype="multipart/form-data">
         <textarea id="text_in" name="uinfo" placeholder="说点什么吧..." onblur="checknull();"></textarea>
@@ -44,7 +43,7 @@
     </form>
         <button id="cancel" onclick="cancel();">取消编辑</button>
         <div id="ctrl_upn">
-            <button style="margin-left: 20px" onclick="load();">更新</button>
+            <button id="reload" style="margin-left: 28px" onclick="load();">更新</button>
             <p>
             <a class="chang_page" id="prior" href="#1" style="color:brown" onclick="next('ngtv');"><<上一页</a>
             </p>
@@ -56,6 +55,7 @@
     </div>
     <a name="1"></a>
     <div id="comm_ar"></div>
+
     <script>
 
         $(function () {

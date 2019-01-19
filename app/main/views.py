@@ -101,6 +101,7 @@ def My_page_view():
         if 'uname' in session:
             create_space()
             user = User.query.filter_by(uname=session['uname']).first()
+            session['nickname'] = user.nickname
             comm = Comment.query.all()
             return render_template('My_page.html', nickname=user.nickname)
         else:
@@ -110,6 +111,7 @@ def My_page_view():
         text = request.form['uinfo']
         user = User.query.filter_by(uname=uname).first()
         uid = user.id
+        session['nickname'] = user.nickname
         comment = Comment(text, uid)
         if request.files:
             f = request.files['image']

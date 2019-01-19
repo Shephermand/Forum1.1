@@ -16,3 +16,24 @@ progress::-webkit-progress-value { background: #56BE64; }
     width:100%;
     margin-right: 5px;
 }
+
+a { text-decoration: none; color: #555 }
+
+table{
+    width: 50%;
+    margin-top: 7px;
+}
+
+table .select{
+    width: 38px;
+
+}
+
+table .select input{
+    text-align: left;
+     margin-top: 8px;
+}
+
+table #title{
+    /*text-align: center;*/
+}

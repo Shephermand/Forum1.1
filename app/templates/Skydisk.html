@@ -3,19 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <title>网盘</title>
+    <link href="/static/css/base.css" rel="stylesheet">
+    <link href="/static/css/index.css" rel="stylesheet">
     <link href="/static/css/sky.css" rel="stylesheet">
     <script src="/static/js/cre_xhr.js"></script>
     <script src="/static/js/jquery-1.11.3.js"></script>
     <script src="/static/js/js_skydisk.js"></script>
+    <script src="/static/js/js_mypage.js"></script>
 </head>
 <body>
-<h1>天空网盘</h1>
+<div class="menu">
+      <nav class="nav" id="topnav">
+        <h1 class="logo"><a href="100-main.html">天空云盘</a></h1>
+        <li><a a href="/">首页</a></li>
+        <li><a href="">功能１</a></li>
+        <li><a href="/My_page" onclick="load()">空间主页</a></li>
+        <li><a a href="/My_page" onclick="my_history();">空间记录</a> </li>
+        <li><a href="/skydisk">网盘</a> </li>
+        <li><a href="">个人资料</a> </li>
+        <li><a href="release.html">功能６</a></li>
+          <a style="color: #F1F1F1" href="javascript:void(0);">欢迎,{{dirlist. nickname}}</a>
+          <a style="color: #F1F1F1" href="/logout" class="no-margin">退出</a>
+      </nav>
+</div>
     <form action="/push_file" method="post" enctype="multipart/form-data">
     <div>
         <p>
             <button type="button" onclick="newdir('{{ dirlist.abs_path }}');">新建文件夹</button>
         </p>
-
+    <input type="button" value="删除所选文件" onclick="deleteFile()">
+    <!--批量上传-->
+        <p> <b>上传文件:</b></p>
+    <input type="file" id="uploadFile" onchange="uploadFiles()">
+    <!--上传进度条-->
+    <p id="pbar">
+        <progress id="processBar"></progress>
+    </p>
+    <span id="percen"></span>
         <p>
 {#            上传文件: <input type="file" name="file" id="leading_in" class="hide" onchange="goodfile();">#}
             <input id="hidden" type="hidden" name="path" value="{{ dirlist.abs_path }}">
@@ -24,25 +48,45 @@
     </form>
     <h5>文件列表:{{ dirlist.uroot }}</h5>
 <form id="deldata" action="/delfiles" method="post">
-    <ul>
-        {% for f in dirlist.lst %}
-            <li>
+<table>
+    <thead>
+        <tr>
+            <td class="select"></td>
+            <td id="title">文件名称</td>
+            <td>文件大小</td>
+            <td>上次操作时间</td>
+        </tr>
+    </thead>
+    <tbody>
+    {% for f in dirlist.lst %}
+        <tr>
+            <td class="select">
                 <input type="checkbox" name="del{{ loop.index0 }}" value="{{ dirlist.abs_path }}/{{ f.fname }}">
+            </td>
+            <td class="resurce">
                 <a href="/skydisk?index={{ dirlist.abs_path }}/{{ f.fname }}">{{ f.fname }}</a>
-                <span>创建时间:{{ f.ctime }}</span>
-            </li>
-        {% endfor %}
-    </ul>
+            </td>
+            <td>
+                {{ f.size|humsize }}
+            </td>
+            <td>
+                {{ f.ctime }}
+            </td>
+        </tr>
+    </tbody>
+    {% endfor %}
+</table>
+{#    <ul>#}
+{#        {% for f in dirlist.lst %}#}
+{#            <li>#}
+{#                <input type="checkbox" name="del{{ loop.index0 }}" value="{{ dirlist.abs_path }}/{{ f.fname }}">#}
+{#                <a href="/skydisk?index={{ dirlist.abs_path }}/{{ f.fname }}">{{ f.fname }}</a>#}
+{#                <span>创建时间:{{ f.ctime }}</span>#}
+{#            </li>#}
+{#        {% endfor %}#}
+{#    </ul>#}
     <input type="hidden" name="now_path" value="{{ dirlist.abs_path }}">
 </form>
-    <input type="button" value="删除所选文件" onclick="deleteFile()">
-    <!--批量上传-->
-    <input type="file" id="uploadFile" onchange="uploadFiles()">
-    <!--上传进度条-->
-    <p id="pbar">
-        <progress id="processBar"></progress>
-    </p>
-    <span id="percen"></span>
 
 
 </body>

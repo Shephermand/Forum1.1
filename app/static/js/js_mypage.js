@@ -49,7 +49,7 @@ function to_answer(cid) {
     });
 }
 
-function answer(obj) {
+function answer(obj, f) {
     $.ajax({
         url:'/show_answer',
         type:"get",
@@ -68,7 +68,11 @@ function answer(obj) {
                     html += "<h5 style='margin-bottom: -12px'>";
                     html += "第"+(i+1)+"楼的"+obj2.uname+"发表于:"+obj2.a_time;
                     html += "</h5>";
-                    html += "<p style='font-size: 13px; margin-top: 10px;'>"+obj2.anw+"</p>";
+                    html += "<p style='font-size: 16px; margin-top: 10px;'>"+obj2.anw+"</p>";
+                    if(f==1){
+                        html += "<a>回复</a>";
+                    }
+                    html += "<hr></hr>"
                 });
                 $("#a"+obj.cid).html(html);
             }
@@ -78,43 +82,45 @@ function answer(obj) {
 
 function load() {
     $(".chang_page").attr('style','');
- var xhr = createXhr();
- xhr.open('get','/get_comm',true);
- xhr.onreadystatechange = function () {
-     if(xhr.readyState==4&&xhr.status==200){
-         var res = xhr.responseText;
-         //将res转换为JS对象再保存给res
-         res = JSON.parse(res);
-         //循环遍历res得到每一个对象以及数据
-         var str = "";
-         $.each(res,function(i,obj){
-             str += '<div class="comm">';
-             str += '<h4>';
-              str += "用户:"+obj.nickname+"&nbsp";
-              str += "于:"+obj.up_time;
-             str += '</h4>';
-             str += '<p>';
-              str += obj.text;
-             str += '</p>';
-             if(obj.image){
-                str += "<img class='comm_img' src='static/" + obj.image + "'>";
-             }
-             str += "<hr style='border: 3px groove yellow;'></hr>";
-             str += "<div id='a"+obj.cid+"'></div>";
-             str += "<p id='ta"+obj.cid+"'></p>";
-             answer(obj);
-             str += '</div>';
-         });
-         $("#comm_ar").html(str);
+    $("#reload").attr('onclick', 'load()');
+     var xhr = createXhr();
+     xhr.open('get','/get_comm',true);
+     xhr.onreadystatechange = function () {
+         if(xhr.readyState==4&&xhr.status==200){
+             var res = xhr.responseText;
+             //将res转换为JS对象再保存给res
+             res = JSON.parse(res);
+             //循环遍历res得到每一个对象以及数据
+             var str = "";
+             $.each(res,function(i,obj){
+                 str += '<div class="comm">';
+                 str += '<h4>';
+                  str += "用户:"+obj.nickname+"&nbsp";
+                  str += "于:"+obj.up_time;
+                 str += '</h4>';
+                 str += '<p>';
+                  str += obj.text;
+                 str += '</p>';
+                 if(obj.image){
+                    str += "<img class='comm_img' src='static/" + obj.image + "'>";
+                 }
+                 str += "<hr style='border: 3px groove yellow;'></hr>";
+                 str += "<div id='a"+obj.cid+"'></div>";
+                 str += "<p id='ta"+obj.cid+"'></p>";
+                 answer(obj, 0);
+                 str += '</div>';
+             });
+             $("#comm_ar").html(str);
 
-     }
- };
- xhr.send(null);
+         }
+     };
+     xhr.send(null);
 }
 
 // 我的记录功能
 function my_history() {
     $(".chang_page").attr('style','display:none;');
+    $("#reload").attr('onclick', 'my_history()');
     $.ajax({
         url:'/history',
         type:'get',
@@ -136,7 +142,7 @@ function my_history() {
                 html += "<hr style='border: 3px groove rosybrown;'></hr>";
                 html += "<div id='a"+obj.cid+"'></div>";
                 html += "<p id='ta"+obj.cid+"'></p>";
-                answer(obj);
+                answer(obj, 1);
                 html += '</div>';
             });
             $("#comm_ar").html(html);

@@ -42,10 +42,16 @@ def c_time(bpath, lst):
 def make_data(bpath, lst):
     data = []
     for f in lst:
-        ct = time.localtime(os.path.getctime(os.path.join(bpath, f)))  # 转换为当地时间
+        fpath = os.path.join(bpath, f)
+        if os.path.isdir(fpath):
+            size = 0
+        else:
+            size = os.path.getsize(fpath)
+        ct = time.localtime(os.path.getatime(fpath))  # 转换为当地时间
         dic = {
             'fname': f,
-            'ctime': time.strftime('%Y年%m月%d日 %H:%M:%S', ct)
+            'ctime': time.strftime('%Y年%m月%d日 %H:%M:%S', ct),
+            'size': size
         }
         data.append(dic)
     return data
@@ -160,6 +166,7 @@ def skydisk():
         # create_time = os.path.getctime(abs_path)
         session['upath'] = abs_path
         uroot = '/'
+        nickname = session['nickname']
         return render_template('Skydisk.html', dirlist=locals())
     else:
         index = request.args['index']
@@ -176,6 +183,7 @@ def skydisk():
             return response
         abs_path = index
         lst = make_data(abs_path, os.listdir(index))
+        nickname = session['nickname']
         # create_time = c_time(abs_path, lst)
         return render_template('Skydisk.html', dirlist=locals())
 

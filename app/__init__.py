@@ -8,7 +8,7 @@ db = SQLAlchemy()
 def createApp():
     app = Flask(__name__)
     app.config['DEBUG'] = True
-    app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://root:han1345@localhost:3306/ajax"
+    app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://root:123456@localhost:3306/ajax"
     app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
     app.config['SECRET_KEY'] = "zheshijiyezhongwenmiyao"
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
