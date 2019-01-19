@@ -50,7 +50,6 @@ class Comment(db.Model):
         self.text = text
         self.uid = uid
 
-
     def to_dict(self):
         dic = {
             'cid':self.id,
@@ -67,7 +66,7 @@ class Comment(db.Model):
 class Answer(db.Model):
     __tablename__ = 'answer'
     id = db.Column(db.Integer, primary_key=True)
-    anw = db.Column(db.String(150), nullable=False)
+    anw = db.Column(db.Text, nullable=False)
     a_time = db.Column(db.TIMESTAMP, nullable=False)
     cid = db.Column(db.Integer, db.ForeignKey('comment.id'))
     uid = db.Column(db.Integer, db.ForeignKey('user.id'))

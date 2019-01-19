@@ -24,7 +24,8 @@ def comm_all(num):
 def send_file(filepath):
     with open(filepath, 'rb') as f:
         while True:
-            data = f.read(10*1024*1024)
+            data = f.read(1024*1024)
+            print(n)
             if not data:
                 break
             yield data
