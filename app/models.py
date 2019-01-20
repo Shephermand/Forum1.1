@@ -100,6 +100,22 @@ class Reply(db.Model):
     uid = db.Column(db.Integer, db.ForeignKey('user.id'))
     aid = db.Column(db.Integer, db.ForeignKey('answer.id'))
 
+    def __init__(self, uid, aid, rpl):
+        self.uid = uid
+        self.aid = aid
+        self.rpl = rpl
+
+    def to_dict(self):
+        dic = {
+            'id': self.id,
+            'uname': self.user.nickname,
+            'aid': self.aid,
+            'r_time': str(self.r_time),
+            'rpl': self.rpl
+        }
+        return dic
+
+
 
 
 

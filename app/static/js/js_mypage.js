@@ -69,9 +69,11 @@ function answer(obj, f) {
                     html += "第"+(i+1)+"楼的"+obj2.uname+"发表于:"+obj2.a_time;
                     html += "</h5>";
                     html += "<p style='font-size: 16px; margin-top: 10px;'>"+obj2.anw+"</p>";
-                    if(f==1){
-                        html += "<a>回复</a>";
-                    }
+                    html += "<div id='show_r"+obj2.id+"'></div>";
+
+                    html += "<a onclick='wantReply("+obj2.id+","+f+")' ondblclick='closeReply("+obj2.id+")'>回复</a>";
+                    html += "<p id='r"+obj2.id+"'></p>"
+
                     html += "<hr></hr>"
                 });
                 $("#a"+obj.cid).html(html);
@@ -111,7 +113,7 @@ function load() {
                  str += '</div>';
              });
              $("#comm_ar").html(str);
-
+             showReply();
          }
      };
      xhr.send(null);
@@ -146,6 +148,7 @@ function my_history() {
                 html += '</div>';
             });
             $("#comm_ar").html(html);
+            showReply();
         }
     });
     $("#title").text('我的记录');
@@ -213,3 +216,69 @@ function checkIslog() {
         }
     })
 }
+
+
+function wantReply(aid, f) {
+    var html = '';
+    html += "<input id='ri"+aid+"' type='text' name='reply'>";
+    html += "<button onclick='backReply("+aid+","+f+")'>回复</button>";
+    $("#r"+aid).html(html);
+}
+
+function closeReply(aid) {
+    $("#r"+aid).html('');
+}
+
+function backReply(aid, f) {
+    var reply = $("#ri"+aid).val();
+    console.log(reply);
+
+    $.ajax({
+        url:'/reply',
+        type:'get',
+        data:{
+            'reply': reply,
+            'aid': aid
+        },
+        success: function (data) {
+            if(f==0){
+                load();
+            }else{
+                my_history();
+            }
+        }
+    })
+}
+
+function showReply(where) {
+    console.log('showR开始');
+    $.ajax({
+        url:'/getReply',
+        type:'get',
+        dataType: 'json',
+        success: function (data) {
+            $.each(data, function (i, obj) {
+                var p = document.createElement('p');
+                var html = '';
+                html += obj.uname;
+                html += ":";
+                html += obj.rpl;
+                p.innerHTML = html;
+                console.log(p);
+                $("#show_r"+obj.aid).append(p);
+            });
+            console.log('进入成功函数'+html);
+        }
+    });
+    console.log('showR结束');
+}
+
+
+
+
+
+
+
+
+
+

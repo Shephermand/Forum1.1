@@ -31,7 +31,6 @@
         <p>
             <button type="button" onclick="newdir('{{ dirlist.abs_path }}');">新建文件夹</button>
         </p>
-    <input type="button" value="删除所选文件" onclick="deleteFile()">
     <!--批量上传-->
         <p> <b>上传文件:</b></p>
     <input type="file" id="uploadFile" onchange="uploadFiles()">
@@ -46,15 +45,17 @@
         </p>
     </div>
     </form>
-    <h5>文件列表:{{ dirlist.uroot }}</h5>
+    <h4>
+        文件列表:{{ dirlist.uroot }}
+    </h4>
 <form id="deldata" action="/delfiles" method="post">
 <table>
     <thead>
         <tr>
-            <td class="select"></td>
-            <td id="title">文件名称</td>
-            <td>文件大小</td>
-            <td>上次操作时间</td>
+            <th class="select"></th>
+            <th id="title">文件名称</th>
+            <th>文件大小</th>
+            <th>上次操作时间</th>
         </tr>
     </thead>
     <tbody>
@@ -75,6 +76,9 @@
         </tr>
     </tbody>
     {% endfor %}
+    <tfoot>
+        <td id="deleteButton" colspan="4"><input type="button" value="删除所选文件" onclick="deleteFile()"></td>
+    </tfoot>
 </table>
 {#    <ul>#}
 {#        {% for f in dirlist.lst %}#}

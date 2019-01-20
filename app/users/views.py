@@ -25,7 +25,6 @@ def send_file(filepath):
     with open(filepath, 'rb') as f:
         while True:
             data = f.read(1024*1024)
-            print(n)
             if not data:
                 break
             yield data
@@ -246,6 +245,26 @@ def delfile():
     # create_time = c_time(abs_path, lst)
     # return render_template('Skydisk.html', dirlist=locals())
     return json.dumps(1)
+
+
+@users.route('/reply')
+def reply_views():
+    uid = User.query.filter_by(uname=session['uname']).first().id
+    aid = request.args['aid']
+    rpl = request.args['reply']
+    reply = Reply(uid, aid, rpl)
+    db.session.add(reply)
+    return json.dumps(1)
+
+
+@users.route('/getReply')
+def show_reply():
+    replies = Reply.query.all()
+    lst = []
+    for r in replies:
+        lst.append(r.to_dict())
+    return json.dumps(lst)
+
 
 
 

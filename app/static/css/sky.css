@@ -22,6 +22,7 @@ a { text-decoration: none; color: #555 }
 table{
     width: 50%;
     margin-top: 7px;
+    text-align: center;
 }
 
 table .select{
@@ -30,10 +31,27 @@ table .select{
 }
 
 table .select input{
-    text-align: left;
+    text-align: center;
      margin-top: 8px;
 }
 
 table #title{
     /*text-align: center;*/
+}
+
+#deleteButton{
+    height: 68px;
+    vertical-align: bottom;
+}
+
+#deleteButton > input{
+    color: white;
+    background-color: red;
+    border: 1px solid black;
+}
+
+#deleteButton > input:active{
+    color: red;
+    background-color: white;
+    border: 1px dashed gold;
 }
